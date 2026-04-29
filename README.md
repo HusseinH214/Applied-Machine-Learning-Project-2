@@ -45,4 +45,4 @@ This repository contains an applied machine learning project that predicts flood
 
 ## Why This Project
 
-This project is a practical example of regression modeling on a real-world-style dataset with many similar features. It highlights the full machine learning pipeline from data inspection through model tuning and offers a clean narrative for portfolio presentation.
+This project is a practical example of regression modeling on a real-world-style dataset with many similar features. It highlights the full machine learning pipeline from data inspection through model tuning and offers a clean narrative
