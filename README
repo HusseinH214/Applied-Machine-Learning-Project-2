@@ -1,0 +1,57 @@
+# Flood Probability Regression Project
+
+This repository contains an applied machine learning project that predicts flood probability from environmental, infrastructure, and geographic risk factors. It covers data exploration, preprocessing, model training, hyperparameter tuning, and a feature selection experiment, and it investigates why the models score as highly as they do.
+
+## Project Overview
+
+- **Goal:** Predict `FloodProbability` from 20 risk-factor features such as `MonsoonIntensity`, `TopographyDrainage`, `RiverManagement`, and `Urbanization`.
+- **Dataset:** `flood.csv` contains 50,000 rows with 20 integer feature columns and the target `FloodProbability` (ranging from 0.285 to 0.725). There are no missing values.
+- **Approach:** Exploring summary statistics, outliers, and correlations; scaling the features with `RobustScaler`; comparing multiple regression models and investigating unusually high performance scores.
+
+## Files Included
+
+- `regression.ipynb`: the Jupyter notebook with the full workflow:
+  - dataset loading, summary statistics, and missing-value checks
+  - outlier boxplots for every feature
+  - correlation matrix analysis
+  - a 70/30 train/test split with `RobustScaler`
+  - Multiple Linear Regression, Random Forest, and MLP regression models
+  - verification that the target is an exact linear formula of the features
+  - MLP hyperparameter tuning with `RandomizedSearchCV`
+  - a feature selection experiment training on the top-k correlated features for k = 1 to 20
+- `summary.html`: an HTML table of the dataset's summary statistics (`df.describe()`).
+- `flood.csv`: the dataset used for modeling.
+
+## Key Findings
+
+- **The target is a deterministic formula of the inputs.** Every feature has a linear regression coefficient of exactly 0.005 and the intercept is 0, so `FloodProbability = 0.005 × (sum of all 20 features)` for every row. The dataset is synthetic, with no noise added to the target.
+- **Multiple Linear Regression was selected as the final model.** It recovers the formula exactly (test R² = 1.0, errors around 10⁻¹⁶).
+
+  | Model | Test R² |
+  |---|---|
+  | Multiple Linear Regression | 1.000 |
+  | MLP (tuned) | 0.99999 |
+  | MLP (default) | 0.924 |
+  | Random Forest | 0.733 |
+
+- **All features are equally important.** Their correlations with the target (0.215 to 0.229) differ only through sampling noise. Training on the top k features gives a test R² of almost exactly k/20, so feature selection is not appropriate for this dataset.
+- **Limitation:** because the target has no noise and the data has no verifiable source, these scores will not carry over to real-world flood prediction.
+
+## Technologies Used
+
+- Python
+- pandas
+- numpy
+- matplotlib
+- seaborn
+- sklearn
+
+## How to Reproduce
+
+1. Keep `flood.csv` in the same folder as `regression.ipynb`.
+2. Open `regression.ipynb` in Jupyter Notebook or JupyterLab.
+3. Run all cells in order. A full run takes about 10 minutes, most of it spent on the `RandomizedSearchCV` MLP tuning.
+
+## Why This Project
+
+This project is a practical example of regression modeling on a dataset with many similar features. Beyond comparing models, it shows the value of questioning results that look too good: investigating a perfect R² revealed that the target is an exact formula of the inputs, which changed both the final model choice and how the feature selection results should be interpreted.
